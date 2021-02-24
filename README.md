@@ -4,6 +4,11 @@
 
 * **告别繁琐重复的体力劳动，一分钟干完一天的活。**:hear_no_evil:
 
+* [码云](https://gitee.com/mahuifa/QueryExcel.git)
+
+* [github](https://github.com/mahuifa/QueryExcel.git)
+* [下载](https://github.com/mahuifa/QueryExcel/releases/tag/V1.0)
+
 当需要在多个Excel表格中查询需要的信息是，一个文件一个文件的去查询非常麻烦。
 
 虽然有其他方法可以实现在多个Excel表格中查询目标信息，但使用起来不是很方便，对小白也不是很友好。
