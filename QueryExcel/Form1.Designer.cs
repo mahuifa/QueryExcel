@@ -32,16 +32,16 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox_input = new System.Windows.Forms.RichTextBox();
+            this.comb_mode = new System.Windows.Forms.ComboBox();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.查询模式 = new System.Windows.Forms.Label();
             this.but_Clear = new System.Windows.Forms.Button();
-            this.richTextBox_input = new System.Windows.Forms.RichTextBox();
             this.but_query = new System.Windows.Forms.Button();
             this.but_select = new System.Windows.Forms.Button();
-            this.comb_mode = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -54,7 +54,54 @@
             // 
             // toolTip1
             // 
-            this.toolTip1.IsBalloon = true;
+            this.toolTip1.OwnerDraw = true;
+            this.toolTip1.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.toolTip1_Draw);
+            this.toolTip1.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip1_Popup);
+            // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(315, 482);
+            this.treeView1.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.treeView1, "添加的文件！");
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Location = new System.Drawing.Point(0, 0);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(317, 482);
+            this.richTextBox1.TabIndex = 1;
+            this.richTextBox1.Text = "";
+            this.toolTip1.SetToolTip(this.richTextBox1, "显示查询的结果！");
+            // 
+            // richTextBox_input
+            // 
+            this.richTextBox_input.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox_input.Location = new System.Drawing.Point(2, 5);
+            this.richTextBox_input.Name = "richTextBox_input";
+            this.richTextBox_input.Size = new System.Drawing.Size(240, 382);
+            this.richTextBox_input.TabIndex = 0;
+            this.richTextBox_input.Text = "";
+            this.toolTip1.SetToolTip(this.richTextBox_input, "输入需要查询的信息！");
+            // 
+            // comb_mode
+            // 
+            this.comb_mode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comb_mode.FormattingEnabled = true;
+            this.comb_mode.Items.AddRange(new object[] {
+            "所有文件",
+            "同级路径文件",
+            "选中文件"});
+            this.comb_mode.Location = new System.Drawing.Point(107, 393);
+            this.comb_mode.Name = "comb_mode";
+            this.comb_mode.Size = new System.Drawing.Size(109, 22);
+            this.comb_mode.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.comb_mode, "所有文件：查询当前文件夹及子文件夹下的所有文件。\r\n同级路径文件：只查询当前文件夹内文件，不查询子文件夹下文件。\r\n选中文件：查询文件树中选中的文件。");
             // 
             // splitContainer2
             // 
@@ -97,25 +144,6 @@
             this.splitContainer1.SplitterDistance = 315;
             this.splitContainer1.TabIndex = 2;
             // 
-            // treeView1
-            // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(315, 482);
-            this.treeView1.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.treeView1, "添加的文件！");
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(0, 0);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(317, 482);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
-            this.toolTip1.SetToolTip(this.richTextBox1, "显示查询的结果！");
-            // 
             // 查询模式
             // 
             this.查询模式.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -136,18 +164,6 @@
             this.but_Clear.Text = "清空";
             this.but_Clear.UseVisualStyleBackColor = true;
             this.but_Clear.Click += new System.EventHandler(this.but_Clear_Click);
-            // 
-            // richTextBox_input
-            // 
-            this.richTextBox_input.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox_input.Location = new System.Drawing.Point(2, 5);
-            this.richTextBox_input.Name = "richTextBox_input";
-            this.richTextBox_input.Size = new System.Drawing.Size(240, 382);
-            this.richTextBox_input.TabIndex = 0;
-            this.richTextBox_input.Text = "";
-            this.toolTip1.SetToolTip(this.richTextBox_input, "输入需要查询的信息！");
             // 
             // but_query
             // 
@@ -170,20 +186,6 @@
             this.but_select.Text = "选择文件";
             this.but_select.UseVisualStyleBackColor = true;
             this.but_select.Click += new System.EventHandler(this.but_select_Click);
-            // 
-            // comb_mode
-            // 
-            this.comb_mode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.comb_mode.FormattingEnabled = true;
-            this.comb_mode.Items.AddRange(new object[] {
-            "所有文件",
-            "同级路径文件",
-            "选中文件"});
-            this.comb_mode.Location = new System.Drawing.Point(107, 393);
-            this.comb_mode.Name = "comb_mode";
-            this.comb_mode.Size = new System.Drawing.Size(109, 22);
-            this.comb_mode.TabIndex = 2;
-            this.toolTip1.SetToolTip(this.comb_mode, "所有文件：查询当前文件夹及子文件夹下的所有文件。\r\n同级路径文件：只查询当前文件夹内文件，不查询子文件夹下文件。\r\n选中文件：查询文件树中选中的文件。");
             // 
             // Form1
             // 

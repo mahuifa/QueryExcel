@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using MControl.Forms;
+using NPOI.HSSF.UserModel;
 
 namespace QueryExcel
 {
@@ -200,10 +201,10 @@ namespace QueryExcel
                     //只查询选中的一个文件
                     if (g_nComb_mode == 2)
                     {
-                        if (l_strSelected.Contains(".xlsx"))
+                        if (l_strSelected.Contains(".xlsx") || l_strSelected.Contains(".xls"))
                         {
                             string l_sfullpath = g_sTreeListPath + "\\" + treeView1.SelectedNode.FullPath;
-                            Query(l_sfullpath);
+                            Query(l_sfullpath, treeView1.SelectedNode.FullPath);
                         }
                         return;
                     }
@@ -236,10 +237,10 @@ namespace QueryExcel
             if (p_tn == null) return;
 
             //查询当前路径下所有文件
-            if (p_tn.Text.Contains(".xlsx"))
+            if (p_tn.Text.Contains(".xlsx") || p_tn.Text.Contains(".xls"))
             {
                 string l_sfullpath = g_sTreeListPath + "\\" + p_tn.FullPath;
-                Query(l_sfullpath);
+                Query(l_sfullpath, p_tn.FullPath);
             }
 
             //查询当前文件夹和子文件夹下的所有文件
@@ -249,12 +250,15 @@ namespace QueryExcel
             }
             foreach (TreeNode tn in p_tn.Nodes)
             {
-                if (p_tn.Text.Contains(".xlsx"))
+                if (tn.Text.Contains(".xlsx") || tn.Text.Contains(".xls"))
                 {
-                    string l_sfullpath = g_sTreeListPath + "\\" + p_tn.FullPath;
-                    Query(l_sfullpath);
+                    string l_sfullpath = g_sTreeListPath + "\\" + tn.FullPath;
+                    Query(l_sfullpath, tn.FullPath);
                 }
-                FindNode(tn);
+                else
+                {
+                    FindNode(tn);
+                }
                 if (tn != null) continue;
             }
             return;
@@ -262,7 +266,7 @@ namespace QueryExcel
         #endregion
 
         #region 打开文件开始查询
-        private void Query(string p_strPath)
+        private void Query(string p_strPath, string p_strFullPath)
         {
             try
             {
@@ -275,11 +279,19 @@ namespace QueryExcel
                     }));
                     return;
                 }
-                XSSFWorkbook workbook = new XSSFWorkbook(fsRead);
+                IWorkbook workbook = null;
+                if(Path.GetExtension(p_strPath) == ".xls")                  //打开xls
+                {
+                    workbook = new HSSFWorkbook(fsRead);
+                }
+                else                                                       //打开xlsx
+                {
+                    workbook = new XSSFWorkbook(fsRead);
+                }
                 fsRead.Close();
                 this.Invoke(new Action(() =>
                 {
-                    richTextBox1.AppendText("\n打开表格：" + Path.GetFileName(p_strPath) + "\n");
+                    richTextBox1.AppendText("\n打开表格：" + p_strFullPath + "\n");
                 }));
 
                 for (int i = 0; i < workbook.NumberOfSheets; i++)
@@ -359,5 +371,28 @@ namespace QueryExcel
             richTextBox1.Clear();
         }
         #endregion
+
+        Color m_BackColor = Color.FromArgb(120, 0, 204, 255);                  //背景颜色
+        Color m_FontColor = Color.Black;                                       //文本颜色
+        Bitmap m_BackImage = null;                                             //透明背景
+
+        private void toolTip1_Popup(object sender, PopupEventArgs e)
+        {
+            m_BackImage = new Bitmap(e.ToolTipSize.Width, e.ToolTipSize.Height);
+            var backGraphics = Graphics.FromImage(m_BackImage);
+            backGraphics.CopyFromScreen(new Point(Cursor.Position.X, Cursor.Position.Y + 21), new Point(0, 0), e.ToolTipSize);
+        }
+
+        private void toolTip1_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            if (m_BackImage == null)
+            {
+                return;
+            }
+            Graphics l_graphics = Graphics.FromImage(m_BackImage);
+            l_graphics.FillRectangle(new SolidBrush(m_BackColor), new Rectangle(e.Bounds.Location, e.Bounds.Size));      //绘制背景
+            l_graphics.DrawString(e.ToolTipText, e.Font, new SolidBrush(m_FontColor), 2, 2);                //绘制文本
+            e.Graphics.DrawImage(m_BackImage, new Point(0, 0));
+        }
     }
 }
