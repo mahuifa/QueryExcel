@@ -7,7 +7,7 @@
 * [码云](https://gitee.com/mahuifa/QueryExcel.git)
 
 * [github](https://github.com/mahuifa/QueryExcel.git)
-* [下载](https://github.com/mahuifa/QueryExcel/releases/tag/V1.0)
+* [下载](https://github.com/mahuifa/QueryExcel/releases)
 
 当需要在多个Excel表格中查询需要的信息是，一个文件一个文件的去查询非常麻烦。
 
