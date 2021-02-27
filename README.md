@@ -25,6 +25,7 @@
 * 在当前路径下所有Excel表格（不查询子文件夹下的Excel）的所有Sheet中查询目标信息；
 * 在选中Excel表格（只查询一个文件）的所有Sheet中查询指定信息；
 * 同时查询任意条数信息。
+* 支持.xls、.xlsx。
 
 
 
@@ -41,11 +42,11 @@
 
 ### 3、演示
 
-![QueryExcel](README.assets/QueryExcel.gif)
+![QueryExcel-tuya](README.assets/QueryExcel-tuya.gif)
 
 
 
 * 如下图所示，在输入栏中输入一行为一条查询的信息，可同时查询多条信息。
 
-![image-20210224233637502](README.assets/image-20210224233637502.png)
+![image-20210227172138813](README.assets/image-20210227172138813.png)
 

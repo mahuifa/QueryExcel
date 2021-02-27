@@ -289,7 +289,7 @@ namespace QueryExcel
                 {
                     workbook = new HSSFWorkbook(fsRead);
                 }
-                else                                                       //打开xlsx
+                else                                                        //打开xlsx
                 {
                     workbook = new XSSFWorkbook(fsRead);
                 }
@@ -299,19 +299,19 @@ namespace QueryExcel
                     richTextBox1.AppendText("\n开始查询：" + p_strFullPath + "\n");
                 }));
 
-                for (int i = 0; i < workbook.NumberOfSheets; i++)
+                for (int i = 0; i < workbook.NumberOfSheets; i++)               //遍历sheet
                 {
                     ISheet sheet = workbook.GetSheetAt(i);
-                    for (int j = 0; j <= sheet.LastRowNum; j++)
+                    for (int j = 0; j <= sheet.LastRowNum; j++)                 //遍历行
                     {
                         IRow row = sheet.GetRow(j);
                         if (row == null)
                         {
                             break;
                         }
-                        for (int k = 0; k < row.LastCellNum; k++)
+                        for (int k = 0; k < row.LastCellNum; k++)               //遍历单元格
                         {
-                            foreach (string l_str in g_strInput)
+                            foreach (string l_str in g_strInput)                //遍历输入的查询内容
                             {
                                 if (l_str == "")
                                 {
