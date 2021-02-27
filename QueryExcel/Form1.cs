@@ -74,6 +74,7 @@ namespace QueryExcel
                 int dircount = dir.Count();//获得文件夹对象数量
                 int filecount = file.Count();//获得文件对象数量
                 int sumcount = dircount + filecount;
+                file.Clone();
 
                 if (sumcount == 0)
                 {
@@ -181,7 +182,7 @@ namespace QueryExcel
                 g_strInput = richTextBox_input.Lines;                          //记录需要查询的文本
                 g_nComb_mode = comb_mode.SelectedIndex;                        //记录查询模式
                 string l_strSelected = "";
-                if(g_nComb_mode == 2)
+                if (g_nComb_mode == 2)
                 {
                     try
                     {
@@ -193,8 +194,8 @@ namespace QueryExcel
                         return;
                     }
                 }
-                
                 but_query.Text = "停止";
+                TreeNodeCollection treeNode = treeView1.Nodes;
 
                 new Thread(new ThreadStart(() =>
                 {
@@ -203,16 +204,20 @@ namespace QueryExcel
                     {
                         if (l_strSelected.Contains(".xlsx") || l_strSelected.Contains(".xls"))
                         {
-                            string l_sfullpath = g_sTreeListPath + "\\" + treeView1.SelectedNode.FullPath;
-                            Query(l_sfullpath, treeView1.SelectedNode.FullPath);
+                            string l_sfullpath = g_sTreeListPath + "\\" + l_strSelected;
+                            Query(l_sfullpath, l_strSelected);
                         }
+                        this.Invoke(new Action(() =>
+                        {
+                            but_query.Text = "查询";
+                        }));
                         return;
                     }
 
                     //查询多个文件
-                    for (int i = 0; i < treeView1.Nodes.Count; i++)
+                    for (int i = 0; i < treeNode.Count; i++)
                     {
-                        FindNode(treeView1.Nodes[i]);
+                        FindNode(treeNode[i]);
                         if (g_bQuit)
                         {
                             break;
@@ -280,7 +285,7 @@ namespace QueryExcel
                     return;
                 }
                 IWorkbook workbook = null;
-                if(Path.GetExtension(p_strPath) == ".xls")                  //打开xls
+                if (Path.GetExtension(p_strPath) == ".xls")                  //打开xls
                 {
                     workbook = new HSSFWorkbook(fsRead);
                 }
@@ -291,16 +296,20 @@ namespace QueryExcel
                 fsRead.Close();
                 this.Invoke(new Action(() =>
                 {
-                    richTextBox1.AppendText("\n打开表格：" + p_strFullPath + "\n");
+                    richTextBox1.AppendText("\n开始查询：" + p_strFullPath + "\n");
                 }));
 
                 for (int i = 0; i < workbook.NumberOfSheets; i++)
                 {
                     ISheet sheet = workbook.GetSheetAt(i);
-                    for (int j = 0; j < sheet.LastRowNum; j++)
+                    for (int j = 0; j <= sheet.LastRowNum; j++)
                     {
                         IRow row = sheet.GetRow(j);
-                        foreach (ICell cell in row.Cells)
+                        if (row == null)
+                        {
+                            break;
+                        }
+                        for (int k = 0; k < row.LastCellNum; k++)
                         {
                             foreach (string l_str in g_strInput)
                             {
@@ -308,13 +317,27 @@ namespace QueryExcel
                                 {
                                     continue;
                                 }
-                                if (cell.ToString().Contains(l_str))
+                                string l_strValue = null;
+                                ICell cell = row.GetCell(k);
+                                if (cell.CellType == CellType.Numeric)
+                                {
+                                    l_strValue = cell.ToString();
+                                }
+                                else if (cell.CellType == CellType.String)
+                                {
+                                    l_strValue = cell.StringCellValue;
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                                if (l_strValue.Contains(l_str) || l_strValue == l_str)
                                 {
                                     this.Invoke(new Action(() =>
                                     {
                                         richTextBox1.SelectionFont = new Font("黑体", 9f, FontStyle.Regular);
                                         richTextBox1.SelectionColor = Color.DodgerBlue;
-                                        richTextBox1.AppendText(l_str + "位于：" + sheet.SheetName + "->第" + (j + 1) + "行" + "\n");
+                                        richTextBox1.AppendText(l_str + "位于：" + sheet.SheetName + "->第" + (j + 1) + "行，第" + (k + 1) + "列。\n");
                                     }));
                                 }
                             }
@@ -329,7 +352,8 @@ namespace QueryExcel
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
+                MessageBox.Show("查询失败！");
             }
         }
         #endregion
@@ -372,6 +396,7 @@ namespace QueryExcel
         }
         #endregion
 
+        #region 重绘ToolTip
         Color m_BackColor = Color.FromArgb(120, 0, 204, 255);                  //背景颜色
         Color m_FontColor = Color.Black;                                       //文本颜色
         Bitmap m_BackImage = null;                                             //透明背景
@@ -394,5 +419,6 @@ namespace QueryExcel
             l_graphics.DrawString(e.ToolTipText, e.Font, new SolidBrush(m_FontColor), 2, 2);                //绘制文本
             e.Graphics.DrawImage(m_BackImage, new Point(0, 0));
         }
+        #endregion
     }
 }
