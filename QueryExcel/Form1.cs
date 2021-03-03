@@ -186,7 +186,7 @@ namespace QueryExcel
                 {
                     try
                     {
-                        l_strSelected = treeView1.SelectedNode.Text;                //记录选中节点
+                        l_strSelected = treeView1.SelectedNode.FullPath;                //记录选中节点
                     }
                     catch (NullReferenceException ne)
                     {
@@ -196,7 +196,14 @@ namespace QueryExcel
                 }
                 but_query.Text = "停止";
                 TreeNodeCollection treeNode = treeView1.Nodes;
-
+                if (m_LstrPath == null)
+                {
+                    m_LstrPath = new List<string>();
+                }
+                else
+                {
+                    m_LstrPath.Clear();
+                }
                 new Thread(new ThreadStart(() =>
                 {
                     //只查询选中的一个文件
@@ -271,6 +278,7 @@ namespace QueryExcel
         #endregion
 
         #region 打开文件开始查询
+        List<string> m_LstrPath = null;                        //保存存在查询内容的文件路径
         private void Query(string p_strPath, string p_strFullPath)
         {
             try
@@ -299,6 +307,7 @@ namespace QueryExcel
                     richTextBox1.AppendText("\n开始查询：" + p_strFullPath + "\n");
                 }));
 
+                bool l_bFind = false;                               //是否存在需要查询的内容
                 for (int i = 0; i < workbook.NumberOfSheets; i++)               //遍历sheet
                 {
                     ISheet sheet = workbook.GetSheetAt(i);
@@ -319,6 +328,10 @@ namespace QueryExcel
                                 }
                                 string l_strValue = null;
                                 ICell cell = row.GetCell(k);
+                                if (cell == null)
+                                {
+                                    break;
+                                }
                                 if (cell.CellType == CellType.Numeric)
                                 {
                                     l_strValue = cell.ToString();
@@ -329,31 +342,38 @@ namespace QueryExcel
                                 }
                                 else
                                 {
-                                    return;
+                                    break;
                                 }
                                 if (l_strValue.Contains(l_str) || l_strValue == l_str)
                                 {
+                                    l_bFind = true;
                                     this.Invoke(new Action(() =>
                                     {
                                         richTextBox1.SelectionFont = new Font("黑体", 9f, FontStyle.Regular);
                                         richTextBox1.SelectionColor = Color.DodgerBlue;
-                                        richTextBox1.AppendText(l_str + "位于：" + sheet.SheetName + "->第" + (j + 1) + "行，第" + (k + 1) + "列。\n");
+                                        richTextBox1.AppendText("（" + l_str + "）位于：" + sheet.SheetName + "->第" + (j + 1) + "行，第" + (k + 1) + "列。\n");
                                     }));
                                 }
                             }
+
                         }
                         if (g_bQuit)
                         {
+                            workbook.Close();
                             return;
                         }
                     }
+                }
+                if (l_bFind)
+                {
+                    m_LstrPath.Add(p_strPath);
                 }
                 workbook.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                MessageBox.Show("查询失败！");
+                MessageBox.Show(p_strPath, " 查询失败！");
             }
         }
         #endregion
@@ -420,5 +440,74 @@ namespace QueryExcel
             e.Graphics.DrawImage(m_BackImage, new Point(0, 0));
         }
         #endregion
+
+        #region 文件分类保存
+        private void but_sort_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DirectoryInfo dirs = new DirectoryInfo(g_sTreeListPath);    //获得程序所在路径的目录对象
+                string l_strSourceName = dirs.Name;                         //原文件名称
+                folderBrowserDialog1.SelectedPath = g_sTreeListPath;
+                folderBrowserDialog1.Description = "选择回放数据总文件夹";
+                if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    g_sTreeListPath = folderBrowserDialog1.SelectedPath;
+                }
+                else
+                {
+                    return;
+                }
+
+                if (g_sTreeListPath != "")
+                {
+                    string l_strPath = g_sTreeListPath + "\\" + l_strSourceName + "-Sort";
+                    new Thread(new ThreadStart(() =>
+                    {
+                        FileCopy(l_strPath);
+                    })).Start();
+                }
+                else
+                {
+                    MessageBox.Show("请重新选择文件路径！", "提示");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                MessageBox.Show("选择路径异常！");
+            }
+        }
+
+        /// <summary>
+        /// 开始拷贝目标文件
+        /// </summary>
+        /// <param name="p_strSourceName"></param>
+        /// <param name="p_strPath"></param>
+        private void FileCopy(string p_strPath)
+        {
+            try
+            {
+                if (!Directory.Exists(p_strPath))
+                {
+                    Directory.CreateDirectory(p_strPath);
+                }
+
+                for (int i = 0; i < m_LstrPath.Count; i++)
+                {
+                    string l_strSource = m_LstrPath[i];
+                    string l_strDest = p_strPath + "\\" + Path.GetFileName(l_strSource);
+                    File.Copy(l_strSource, l_strDest);
+                }
+                MessageBox.Show("保存完成！");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                MessageBox.Show("分类保存文件异常！");
+            }
+        }
+        #endregion
+
     }
 }

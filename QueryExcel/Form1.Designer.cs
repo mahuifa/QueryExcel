@@ -38,6 +38,7 @@
             this.comb_mode = new System.Windows.Forms.ComboBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.but_sort = new System.Windows.Forms.Button();
             this.查询模式 = new System.Windows.Forms.Label();
             this.but_Clear = new System.Windows.Forms.Button();
             this.but_query = new System.Windows.Forms.Button();
@@ -63,7 +64,7 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(315, 482);
+            this.treeView1.Size = new System.Drawing.Size(344, 561);
             this.treeView1.TabIndex = 0;
             this.toolTip1.SetToolTip(this.treeView1, "添加的文件！");
             // 
@@ -72,7 +73,7 @@
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox1.Location = new System.Drawing.Point(0, 0);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(317, 482);
+            this.richTextBox1.Size = new System.Drawing.Size(348, 561);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
             this.toolTip1.SetToolTip(this.richTextBox1, "显示查询的结果！");
@@ -84,7 +85,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox_input.Location = new System.Drawing.Point(2, 5);
             this.richTextBox_input.Name = "richTextBox_input";
-            this.richTextBox_input.Size = new System.Drawing.Size(240, 382);
+            this.richTextBox_input.Size = new System.Drawing.Size(264, 461);
             this.richTextBox_input.TabIndex = 0;
             this.richTextBox_input.Text = "";
             this.toolTip1.SetToolTip(this.richTextBox_input, "输入需要查询的信息！");
@@ -97,9 +98,9 @@
             "所有文件",
             "同级路径文件",
             "选中文件"});
-            this.comb_mode.Location = new System.Drawing.Point(107, 393);
+            this.comb_mode.Location = new System.Drawing.Point(90, 472);
             this.comb_mode.Name = "comb_mode";
-            this.comb_mode.Size = new System.Drawing.Size(109, 22);
+            this.comb_mode.Size = new System.Drawing.Size(81, 22);
             this.comb_mode.TabIndex = 2;
             this.toolTip1.SetToolTip(this.comb_mode, "所有文件：查询当前文件夹及子文件夹下的所有文件。\r\n同级路径文件：只查询当前文件夹内文件，不查询子文件夹下文件。\r\n选中文件：查询文件树中选中的文件。");
             // 
@@ -117,14 +118,15 @@
             // 
             // splitContainer2.Panel2
             // 
+            this.splitContainer2.Panel2.Controls.Add(this.but_sort);
             this.splitContainer2.Panel2.Controls.Add(this.查询模式);
             this.splitContainer2.Panel2.Controls.Add(this.but_Clear);
             this.splitContainer2.Panel2.Controls.Add(this.richTextBox_input);
             this.splitContainer2.Panel2.Controls.Add(this.but_query);
             this.splitContainer2.Panel2.Controls.Add(this.but_select);
             this.splitContainer2.Panel2.Controls.Add(this.comb_mode);
-            this.splitContainer2.Size = new System.Drawing.Size(887, 482);
-            this.splitContainer2.SplitterDistance = 636;
+            this.splitContainer2.Size = new System.Drawing.Size(971, 561);
+            this.splitContainer2.SplitterDistance = 696;
             this.splitContainer2.TabIndex = 5;
             // 
             // splitContainer1
@@ -140,24 +142,36 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.richTextBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(636, 482);
-            this.splitContainer1.SplitterDistance = 315;
+            this.splitContainer1.Size = new System.Drawing.Size(696, 561);
+            this.splitContainer1.SplitterDistance = 344;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // but_sort
+            // 
+            this.but_sort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.but_sort.Location = new System.Drawing.Point(96, 520);
+            this.but_sort.Name = "but_sort";
+            this.but_sort.Size = new System.Drawing.Size(75, 23);
+            this.but_sort.TabIndex = 6;
+            this.but_sort.Text = "另存";
+            this.but_sort.UseVisualStyleBackColor = true;
+            this.but_sort.Click += new System.EventHandler(this.but_sort_Click);
             // 
             // 查询模式
             // 
             this.查询模式.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.查询模式.AutoSize = true;
-            this.查询模式.Location = new System.Drawing.Point(24, 396);
+            this.查询模式.Location = new System.Drawing.Point(15, 476);
             this.查询模式.Name = "查询模式";
-            this.查询模式.Size = new System.Drawing.Size(77, 14);
+            this.查询模式.Size = new System.Drawing.Size(70, 14);
             this.查询模式.TabIndex = 5;
-            this.查询模式.Text = "查询模式：";
+            this.查询模式.Text = "查询模式:";
+            this.查询模式.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // but_Clear
             // 
             this.but_Clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.but_Clear.Location = new System.Drawing.Point(170, 437);
+            this.but_Clear.Location = new System.Drawing.Point(175, 520);
             this.but_Clear.Name = "but_Clear";
             this.but_Clear.Size = new System.Drawing.Size(75, 23);
             this.but_Clear.TabIndex = 4;
@@ -168,7 +182,7 @@
             // but_query
             // 
             this.but_query.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.but_query.Location = new System.Drawing.Point(89, 437);
+            this.but_query.Location = new System.Drawing.Point(17, 520);
             this.but_query.Name = "but_query";
             this.but_query.Size = new System.Drawing.Size(75, 23);
             this.but_query.TabIndex = 3;
@@ -179,7 +193,7 @@
             // but_select
             // 
             this.but_select.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.but_select.Location = new System.Drawing.Point(8, 437);
+            this.but_select.Location = new System.Drawing.Point(175, 472);
             this.but_select.Name = "but_select";
             this.but_select.Size = new System.Drawing.Size(75, 23);
             this.but_select.TabIndex = 1;
@@ -191,7 +205,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(892, 533);
+            this.ClientSize = new System.Drawing.Size(980, 612);
             this.Controls.Add(this.splitContainer2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
@@ -225,6 +239,7 @@
         private System.Windows.Forms.Button but_query;
         private System.Windows.Forms.Button but_select;
         private System.Windows.Forms.ComboBox comb_mode;
+        private System.Windows.Forms.Button but_sort;
     }
 }
 
